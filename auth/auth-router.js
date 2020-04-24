@@ -8,6 +8,7 @@ secrets = require('./secrets.js');
 router.post('/register', (req, res) => {
   let user = req.body;
   const rounds = process.env.HASH_ROUNDS || 14;
+  const hash = bcrypt.hashSync(user.password, rounds);
   user.password = hash;
 
   Users.add(user)
@@ -24,7 +25,7 @@ router.post('/login', (req, res) => {
   let { username, password } = req.body;
 
   // search for username:
-  Users.findById({ username })
+  Users.findBy({ username })
     .then(([user]) => {
       // if user found, check that passwords match:
       if (user && bcrypt.compareSync(password, user.password)) {
@@ -33,7 +34,7 @@ router.post('/login', (req, res) => {
         // send that token to the client:
         res.status(200).json({ message: "Welcome to Dad Jokes!", token})
       } else {
-        res.status(401).json({ message: "Password incorrect. You cannot pass."})
+        res.status(401).json({ message: "Password and/or username incorrect. You cannot pass."})
       }
     })
     .catch(err => {
