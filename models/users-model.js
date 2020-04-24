@@ -1,4 +1,4 @@
-const db = require('../data/dbConfig.js');
+const db = require('../database/dbConfig.js');
 
 // this file contains functions on how we interact with users table.
 
